@@ -1,0 +1,29 @@
+{
+  "name": "functions",
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "serve": "npm run build && firebase emulators:start --only functions",
+    "shell": "npm run build && firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
+  "engines": {
+    "node": "18"
+  },
+  "main": "lib/index.js",
+  "dependencies": {
+    "@react-native-community/datetimepicker": "^8.4.1",
+    "@types/twilio": "^3.19.3",
+    "firebase-admin": "^11.11.1",
+    "firebase-functions": "^4.9.0",
+    "geofire-common": "^5.2.0",
+    "twilio": "^5.7.0"
+  },
+  "devDependencies": {
+    "firebase-functions-test": "^3.1.0",
+    "typescript": "^5.2.2"
+  },
+  "private": true
+}
