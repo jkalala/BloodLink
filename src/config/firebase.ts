@@ -1,11 +1,10 @@
-import { initializeApp } from '@react-native-firebase/app';
+import firebase from '@react-native-firebase/app';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import functions from '@react-native-firebase/functions';
 
-// Your Firebase configuration
-const firebaseConfig = {
-  // TODO: Replace with your Firebase config
+// Validate required environment variables
+const requiredEnvVars = {
   apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
   authDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN,
   projectId: process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID,
@@ -15,28 +14,33 @@ const firebaseConfig = {
   measurementId: process.env.EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+// Check if all required variables are defined
+Object.entries(requiredEnvVars).forEach(([key, value]) => {
+  if (!value) {
+    throw new Error(`Missing required Firebase config: ${key}`);
+  }
+});
+
+// Initialize Firebase with validated config
+const app = firebase.initializeApp(requiredEnvVars as {
+  apiKey: string;
+  authDomain: string;
+  projectId: string;
+  storageBucket: string;
+  messagingSenderId: string;
+  appId: string;
+  measurementId: string;
+});
 
 // Initialize services
 const firebaseAuth = auth();
 const firebaseFirestore = firestore();
 const firebaseFunctions = functions();
 
-// Enable offline persistence
-firebaseFirestore.enablePersistence()
-  .catch((err) => {
-    if (err.code === 'failed-precondition') {
-      console.warn('Multiple tabs open, persistence can only be enabled in one tab at a time.');
-    } else if (err.code === 'unimplemented') {
-      console.warn('The current browser does not support persistence.');
-    }
-  });
-
-// Set up Firestore settings
+// Configure Firestore settings
 firebaseFirestore.settings({
-  cacheSizeBytes: firestore.CACHE_SIZE_UNLIMITED,
-  merge: true
+  persistence: true,
+  cacheSizeBytes: firestore.CACHE_SIZE_UNLIMITED
 });
 
 export { app, firebaseAuth, firebaseFirestore, firebaseFunctions }; 
